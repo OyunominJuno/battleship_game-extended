@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    
+    </head>
+<body>
+
+<h1>Battleship Game</h1>
+<p id="part1">Part 1</p>
+    <p id="part3"></p>
+    <p id="part4"><button type=button onclick=getUpdateDisplay()>GUESS</button></p>
+    <p id="part5">Status</p>
+    <p id="part6"></p>
+    <p id="part7"></p>
+    
+<script>
+    
+    var gameArray=[];
+    var empty = 0;
+    var hit = 1;
+    var miss = 2;
+    var ship = 3;
+    var guess1 = 0;
+    var countTries = 0;
+    var countMisses = 0;
+    var countHits = 0;
+    
+    initGame(100);
+    dispgameArray();
+    shipLocator();
+    dispgameArray();
+    dispBoard();
+    //guess1 = getGuess();
+    //updateGameArray(guess1);
+    //dispgameArray();
+
+    
+    function initGame(n){
+        for (var i=0; i<n; i++){
+            gameArray[i] = empty;
+        }
+    }
+   
+    function dispgameArray(){
+        var html = "";
+        for (var i=0; i < gameArray.length; i++){
+            if (gameArray[i] == empty) {
+                html = html + "X  "}
+            
+            if (gameArray[i] == ship){
+                html = html + "&  "}
+            
+            if (gameArray[i] == miss){
+                html = html + "M  "}
+            
+            if (gameArray[i] == hit){
+                html = html + "*  "}
+            if ((i - 9) % 10 == 0) {
+                html = html + "<br>"
+            }
+            
+        }
+        document.getElementById("part3").innerHTML = html;
+    }
+    function aircraftHorizontal(location) {
+        //if the location less than 4 blocks away from the right side wall ship is created backward 5 blocks
+        if ((location - 6) % 10 == 0 | (location - 7) % 10 == 0 | (location - 8) % 10 == 0 | (location - 9) % 10 == 0) {
+            gameArray[location] = ship;
+            gameArray[location-1] = ship;
+            gameArray[location-2] = ship;
+            gameArray[location-3] = ship;
+            gameArray[location-4] = ship;
+        } else {
+            //all other locations ship is created forward 5 blocks
+            gameArray[location] = ship;
+            gameArray[location+1] = ship;
+            gameArray[location+2] = ship;
+            gameArray[location+3] = ship;
+            gameArray[location+4] = ship;
+        }
+    }
+    function aircraftVertical(location) {
+        //if the location less than 4 blocks away from the bottom wall ship is created backward 5 blocks
+        if (location >= 60 && location <= 99) {
+            gameArray[location] = ship;
+            gameArray[location-10] = ship;
+            gameArray[location-20] = ship;
+            gameArray[location-30] = ship;
+            gameArray[location-40] = ship;
+        } else {
+            //all other locations ship is created forward 5 blocks
+            gameArray[location] = ship;
+            gameArray[location+10] = ship;
+            gameArray[location+20] = ship;
+            gameArray[location+30] = ship;
+            gameArray[location+40] = ship;
+        }
+    }
+    function battleshipHorizontal(location) {
+        //if the location less than 4 blocks away from the right side wall ship is created backward 5 blocks
+        if ((location - 7) % 10 == 0 | (location - 8) % 10 == 0 | (location - 9) % 10 == 0) {
+            gameArray[location] = ship;
+            gameArray[location-1] = ship;
+            gameArray[location-2] = ship;
+            gameArray[location-3] = ship;
+        } else {
+            //all other locations ship is created forward 5 blocks
+            gameArray[location] = ship;
+            gameArray[location+1] = ship;
+            gameArray[location+2] = ship;
+            gameArray[location+3] = ship;
+        }
+    }
+    function battleshipVertical(location) {
+        //if the location less than 3 blocks away from the bottom wall ship is created backward 4 blocks
+        if (location >= 70 && location <= 99) {
+            gameArray[location] = ship;
+            gameArray[location-10] = ship;
+            gameArray[location-20] = ship;
+            gameArray[location-30] = ship;
+            
+        } else {
+            //all other locations ship is created forward 4 blocks
+            gameArray[location] = ship;
+            gameArray[location+10] = ship;
+            gameArray[location+20] = ship;
+            gameArray[location+30] = ship;
+        }
+    }
+    function cruiserAndSubmarineHorizontal(location) {
+        //if the location less than 2 blocks away from the right side wall ship is created backward 3 blocks
+        if ((location - 8) % 10 == 0 | (location - 9) % 10 == 0) {
+            gameArray[location] = ship;
+            gameArray[location-1] = ship;
+            gameArray[location-2] = ship;
+        } else {
+            //all other locations ship is created forward 3 blocks
+            gameArray[location] = ship;
+            gameArray[location+1] = ship;
+            gameArray[location+2] = ship;
+        }
+    }
+    function cruiserAndSubmarineVertical(location) {
+        //if the location less than 2 blocks away from the bottom wall ship is created backward 3 blocks
+        if (location >= 80 && location <= 99) {
+            gameArray[location] = ship;
+            gameArray[location-10] = ship;
+            gameArray[location-20] = ship;
+            
+        } else {
+            //all other locations ship is created forward 3 blocks
+            gameArray[location] = ship;
+            gameArray[location+10] = ship;
+            gameArray[location+20] = ship;
+        }
+    }
+    function destroyerHorizontal(location) {
+        //if the location less than 1 block away from the right side wall ship is created backward 2 blocks
+        if ((location - 9) % 10 == 0) {
+            gameArray[location] = ship;
+            gameArray[location-1] = ship;
+        } else {
+            //all other locations ship is created forward 2 blocks
+            gameArray[location] = ship;
+            gameArray[location+1] = ship;
+        }
+    }
+    function destroyerVertical(location) {
+        //if the location less than 1 block away from the bottom wall ship is created backward 2 blocks
+        if (location >= 90 && location <= 99) {
+            gameArray[location] = ship;
+            gameArray[location-10] = ship;
+            
+        } else {
+            //all other locations ship is created forward 2 blocks
+            gameArray[location] = ship;
+            gameArray[location+10] = ship;
+        }
+    }
+    function checkShip(location, block_count) {
+        var checked = false;
+        for (var i = 1; i <= block_count; i++) {
+            if (gameArray[location - i] == ship | gameArray[location + i] == ship | gameArray[location - i * 10] == ship | gameArray[location + i * 10] == ship) {
+                checked = true;
+            } 
+        } 
+        return checked;
+    }
+    function shipLocator(){
+        var location = Math.floor(Math.random()*98);
+        //randomizing the vertical and horizontal ship using if the location is even or odd
+        if (location % 2 == 0) {
+            aircraftVertical(location);
+        } else {
+            aircraftHorizontal(location);
+        }
+        //gets second random location for the battleship
+        var location2 = Math.floor(Math.random()*98);
+        while (checkShip(location2, 4)) {
+            location2 = Math.floor(Math.random()*98);
+        }
+        if (location2 % 2 == 0) {
+            battleshipVertical(location2);
+        } else {
+            battleshipHorizontal(location2);
+        }
+        
+        
+        var location3 = Math.floor(Math.random()*98);
+        while (checkShip(location3, 3)) {
+            location3 = Math.floor(Math.random()*98);
+        }
+        if (location3 % 2 == 0) {
+            cruiserAndSubmarineHorizontal(location3);
+        } else {
+            cruiserAndSubmarineVertical(location3);
+        }
+                
+        
+        var location4 = Math.floor(Math.random()*98);
+        while (checkShip(location4, 3)) {
+            location4 = Math.floor(Math.random()*98);
+        }
+        if (location4 % 2 == 0) {
+            cruiserAndSubmarineHorizontal(location4);
+        } else {
+            cruiserAndSubmarineVertical(location4);
+        }
+        
+        
+        var location5 = Math.floor(Math.random()*98);
+        while (checkShip(location5, 2)) {
+            location5 = Math.floor(Math.random()*98);
+        }
+        if (location5 % 2 == 0) {
+            destroyerHorizontal(location5);
+        } else {
+            destroyerVertical(location5);
+        }
+    }
+    function countShip() {
+        var countShip = 0;
+        for (var i = 0; i < gameArray.length; i++) {
+            if (gameArray[i] == ship) {
+                countShip++;
+            }
+        }
+        return countShip;
+    }
+   function getGuess(){
+       var guessIsBad = true;
+        while (guessIsBad) {
+            var guess =  window.prompt("Enter your guess", "Number from 0 to 99");
+            if (guess == null) {return;} // stops the function if clicked "Cancel" button
+            if ((parseInt(guess) >= 0 ) && (parseInt(guess) <= 99)){
+                return parseInt(guess);}
+        }
+        return parseInt(guess);
+    } 
+    
+    function updateGameArray(guess2){
+        if (gameArray[guess2] == empty){gameArray[guess2] = miss; countMisses = countMisses + 1;countTries = countTries + 1;}
+        else {if (gameArray[guess2] == ship) {gameArray[guess2] = hit; countHits = countHits + 1;} 
+        else {if (gameArray[guess2] == miss) {gameArray[guess2] = miss;countTries = countTries + 1;}
+        else {if (gameArray[guess2] == hit) {gameArray[guess2] = hit;countTries = countTries + 1;}
+             }}}
+    }
+    
+    
+    function getUpdateDisplay(){
+        var guess1 = getGuess();
+    updateGameArray(guess1);
+    dispgameArray();
+    dispBoard();
+    }
+    
+    function dispBoard(){
+        var html = "";
+        for (var i=0; i < gameArray.length; i++){
+            if (gameArray[i] == empty) {
+                html = html + "<img src='water.png' alt='1' height='25' width='25'> "}
+            
+            if (gameArray[i] == ship){
+               html = html + "<img src='water.png' alt='1' height='25' width='25'>  "}
+            
+            if (gameArray[i] == miss){
+                html = html + "<img src='miss.png' alt='1' height='25' width='25'>  "}
+            
+            if (gameArray[i] == hit){
+               html = html + "<img src='hit.png' alt='1' height='25' width='25'>  "}
+            if ((i - 9) % 10 == 0) {
+                html = html + "<br>"}
+            }
+        document.getElementById("part1").innerHTML = html;
+        document.getElementById("part5").innerHTML = "Tries - " + countTries + " Misses - " + countMisses + " Hits = " + countHits;
+        if (countTries > 20) { document.getElementById("part6").innerHTML ="Ships ESCAPED!"}
+        if (countHits >= 14) { document.getElementById("part7").innerHTML = "You SUNK all of them!"}
+    }
+    
+    
+    
+</script>
+
+</body>
+</html>
+
+
+
+
+
+
