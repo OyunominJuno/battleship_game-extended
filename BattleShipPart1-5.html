@@ -30,11 +30,7 @@
     shipLocator();
     dispgameArray();
     dispBoard();
-    //guess1 = getGuess();
-    //updateGameArray(guess1);
-    //dispgameArray();
 
-    
     function initGame(n){
         for (var i=0; i<n; i++){
             gameArray[i] = empty;
@@ -253,6 +249,9 @@
             var guess =  window.prompt("Enter your guess", "Number from 0 to 99");
             if (guess == null) {return;} // stops the function if clicked "Cancel" button
             if ((parseInt(guess) >= 0 ) && (parseInt(guess) <= 99)){
+                if(gameArray[guess] == hit | gameArray[guess] == miss) {
+                    alert("You guessed this number already, Try Again");
+                }
                 return parseInt(guess);}
         }
         return parseInt(guess);
@@ -293,8 +292,8 @@
             }
         document.getElementById("part1").innerHTML = html;
         document.getElementById("part5").innerHTML = "Tries - " + countTries + " Misses - " + countMisses + " Hits = " + countHits;
-        if (countTries > 20) { document.getElementById("part6").innerHTML ="Ships ESCAPED!"}
-        if (countHits >= 14) { document.getElementById("part7").innerHTML = "You SUNK all of them!"}
+        if (countTries == 50) { document.getElementById("part4").innerHTML ="Ships ESCAPED!"}
+        if (countHits == 17) { document.getElementById("part4").innerHTML = "You SUNK all of them!"}
     }
     
     
